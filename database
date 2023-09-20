@@ -1,16 +1,20 @@
--- DATABASES
+/* 
+
+DATABASES
+
+*/
   
--- Display the available databases.
+-- display the available databases.
 SHOW DATABASES;
 
--- Create a database modelone.
+-- create a database modelone.
 CREATE DATABASE modelone;
 
--- Create a database modelone if it doesn't exist.
+-- create a database modelone if it doesn't exist.
 CREATE DATABASE IF NOT EXISTS modelone;
 
--- Select the database. A database must be selected before it can be used.
+-- select the database. A database must be selected before it can be used.
 USE modelone;
 
--- Delete the database. The database will no longer show up in the list of databases.
+-- delete the database. The database will no longer show up in the list of databases.
 DROP DATABASE modelone;
