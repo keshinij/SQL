@@ -3,9 +3,11 @@
 TABLE
 
 */
-  
+
+
 -- tables are deleted using DROP Table statement.
 DROP TABLE IF EXISTS 'offices';
+
 
 
 -- create a table 'offices'.
@@ -46,12 +48,36 @@ CREATE TABLE IF NOT EXISTS 'employees'(
 */
 
 
+
 -- show the table.
 SHOW TABLES;
 
 
+
 -- describe the table.
 DESCRIBE offices;
+
+
+
+-- modify the table to add a column.
+ALTER table_name ADD column_name datatype;
+ALTER employees ADD 'hiredON' date;
+
+-- modify the table to remove a column.
+ALTER TABLE table_name DROP COLUMN column_name;
+ALTER TABLE employees DROP COLUMN hiredOn;
+
+-- changing the data type of a column.
+ALTER TABLE table_name MODIFY COLUMN column_name datatype;
+
+-- renaming a column.
+ALTER TABLE table_name RENAME COLUMN old_column_name TO new_column_name;
+ALTER TABLE employees RENAME COLUMN email TO emailAdd;
+
+/* 
+  You can rename a column that is a primary key but cannot NOT DROP.
+*/ 
+
 
 
 -- insert values into the table.
@@ -65,8 +91,7 @@ INSERT INTO 'offices'('officeCode', 'address', 'state', 'country', 'postalCode')
   ('2', '27 Rue Mon Coeur, Paris', NULL, 'France', '54444');
 
 
+
 -- view the data.
 SELECT officeCode, address FROM offices;
 SELECT * FROM offices;
-
-
