@@ -1,0 +1,34 @@
+SELECT column1, column2
+FROM tableName
+WHERE condition AND condition / WHERE NOT condition
+ORDER BY column1 ASC / DESC
+GROUP BY
+LIMIT number
+
+
+
+
+SELECT ... FROM ... WHERE ... LIKE pattern
+
+UPDATE tableName 
+SET column1=value1, column2=value2, ... 
+WHERE condition;
+
+DELETE column1
+FROM tableName 
+WHERE condition;
+
+-- List the employee codes for sales representatives of customers in Spain, France and Italy. 
+SELECT salesRepEmployeeNumber 
+FROM modelone.customers 
+WHERE country IN ("Spain", "France", "Italy");
+
+-- Make another query to list the names and email addresses of those employees.
+SELECT lastName, firstName, email FROM modelone.employees WHERE employeeNumber IN (1370, 1337, 1702, 1401);
+
+
+--Change the job title "Sales Rep" to "Sales Representative"
+UPDATE modelone.employees SET jobTitle="Sales Representative" WHERE jobTitle="Sales Rep";
+
+
+
