@@ -1,10 +1,10 @@
--- Tables are deleted using DROP Table statement.
+-- tables are deleted using DROP Table statement.
 DROP TABLE IF EXISTS 'offices';
 
 
--- Create a table 'offices'.
-CREATE TABLE table_name(column_1 datatype, column_2 datatype, ...)
-CREATE TABLE IF NOT EXISTS table_name(...);
+-- create a table 'offices'.
+CREATE TABLE table_name(column_1 datatype, column_2 datatype, ...);
+CREATE TABLE IF NOT EXISTS table_name(column_1 datatype, column_2 datatype, ...);
 
 CREATE TABLE 'offices'(
   'officeCode' varchar(10) NOT NULL, 
@@ -14,6 +14,7 @@ CREATE TABLE 'offices'(
   'postalCode' varchar(15) NOT NULL,   
   PRIMARY KEY('officeCode')
 );
+
 CREATE TABLE IF NOT EXISTS 'employees'(
   'employeeNumber' int(11) NOT NULL,
   'name' varchar(50) NOT NULL,
@@ -25,11 +26,12 @@ CREATE TABLE IF NOT EXISTS 'employees'(
   FOREIGN KEY ('reportsTo') REFERENCES 'employees' ('employeeNumber'),
   FOREIGN KEY ('officeCode') REFERENCES 'offices' (`officeCode`)
 );
+
 /* 
 FOREIGN KEY is a field (or collection of fields) in one table, that refers to the PRIMARY KEY in another table.
 We've added a foreign key constraint for the the officeCode column, connecting it with the offices table. 
-This ensure that we can't set an employee's officeCode to an invalid value.
-A foreign key constraint can also be established between a table and itself, as done in the case of the reportsTo column.
+    This ensure that we can't set an employee's officeCode to an invalid value.
+    A foreign key constraint can also be established between a table and itself, as done in the case of the reportsTo column.
 */
 
 
