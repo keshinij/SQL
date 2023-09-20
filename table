@@ -1,3 +1,9 @@
+/* 
+
+TABLE
+
+*/
+  
 -- tables are deleted using DROP Table statement.
 DROP TABLE IF EXISTS 'offices';
 
@@ -15,6 +21,11 @@ CREATE TABLE 'offices'(
   PRIMARY KEY('officeCode')
 );
 
+/*
+  The PRIMARY KEY constraint is officeCode. Primary keys must be UNIQUE values and cannot contain NULL values.
+  If you don't provide a value for a column marked as NOT NULL, an ERROR occurs.
+*/
+
 CREATE TABLE IF NOT EXISTS 'employees'(
   'employeeNumber' int(11) NOT NULL,
   'name' varchar(50) NOT NULL,
@@ -28,37 +39,33 @@ CREATE TABLE IF NOT EXISTS 'employees'(
 );
 
 /* 
-FOREIGN KEY is a field (or collection of fields) in one table, that refers to the PRIMARY KEY in another table.
-We've added a foreign key constraint for the the officeCode column, connecting it with the offices table. 
-    This ensure that we can't set an employee's officeCode to an invalid value.
-    A foreign key constraint can also be established between a table and itself, as done in the case of the reportsTo column.
+  FOREIGN KEY is a field (or collection of fields) in one table, that refers to the PRIMARY KEY in another table.
+  We've added a foreign key constraint for the the officeCode column, connecting it with the offices table. 
+  This ensure that we can't set an employee's officeCode to an invalid value.
+  A foreign key constraint can also be established between a table and itself, as done in the case of the reportsTo column.
 */
 
 
-
--- Show the table.
+-- show the table.
 SHOW TABLES;
 
 
--- Describe the table.
+-- describe the table.
 DESCRIBE offices;
 
 
--- Insert values into the table.
+-- insert values into the table.
 INSERT INTO table_name(column_1, column_2, ...) VALUES (value1_1, value1_2, ...), (value2_1, value2_2, ...), ...;
--- Skip column names if you are inserting values for all columns
+
+-- skip column names if you are inserting values for all columns.
 INSERT INTO table_name VALUES (value1_1, value1_2, ...), (value2_1, value2_2, ...), ...;
 
 INSERT INTO 'offices'('officeCode', 'address', 'state', 'country', 'postalCode') VALUES
   ('1', '88 Market Street, New York City', 'NY', 'USA', '02108'),  
   ('2', '27 Rue Mon Coeur, Paris', NULL, 'France', '54444');
-/*
-If you don't provide a value for a column marked as not null, an error occurs.
-The PRIMARY KEY constraint is officeCode. Primary keys must be UNIQUE values and cannot contain NULL values.
-*/
 
 
--- View the data.
+-- view the data.
 SELECT officeCode, address FROM offices;
 SELECT * FROM offices;
 
