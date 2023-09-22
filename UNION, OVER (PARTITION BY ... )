@@ -9,13 +9,13 @@ firstName varchar(50),
 lastName varchar(50), 
 age int, 
 gender varchar(50)
-)
+);
 
 CREATE TABLE employeeSalary 
 (employeeID int, 
 jobTitle varchar(50), 
 salary int
-)
+);
 
 INSERT INTO employeeDetails VALUES
 (1001, 'Jim', 'Halpert', 30, 'Male'),
@@ -26,7 +26,7 @@ INSERT INTO employeeDetails VALUES
 (1006, 'Michael', 'Scott', 35, 'Male'),
 (1007, 'Meredith', 'Palmer', 32, 'Female'),
 (1008, 'Stanley', 'Hudson', 38, 'Male'),
-(1009, 'Kevin', 'Malone', 31, 'Male')
+(1009, 'Kevin', 'Malone', 31, 'Male');
 
 INSERT INTO employeeSalary VALUES
 (1001, 'Salesman', 45000),
@@ -37,7 +37,7 @@ INSERT INTO employeeSalary VALUES
 (1006, 'Regional Manager', 65000),
 (1007, 'Supplier Relations', 41000),
 (1008, 'Salesman', 48000),
-(1009, 'Accountant', 42000)
+(1009, 'Accountant', 42000);
 
 SELECT * 
 FROM employeeDetails JOIN employeeSalary
@@ -49,9 +49,35 @@ FROM employeeDetails
 GROUP BY gender;
 
 -- Identify how many males and females employees we have along with their details.
-
 SELECT det.employeeID, CONCAT(det.lastName, ' ' , det.firstName) AS name, det.age, sal.jobTitle, det.gender, sal.salary, 
 	COUNT(det.gender) OVER(PARTITION BY det.gender) AS totalGender
 FROM employeeDetails det JOIN employeeSalary sal
 ON det.employeeID=sal.employeeID;
+
+
+/* Example 2 */
+
+CREATE DATABASE IF NOT EXISTS AverageSalaries;
+USE AverageSalaries;
+
+CREATE TABLE employee
+(id int, 
+last_ame varchar(50), 
+first_name varchar(50), 
+age int, 
+sex varchar(50),
+department varchar(50),
+salary int,
+email varchar(50)
+);
+
+INSERT INTO employee VALUES ( );
+
+
+-- Compare each employee's salary with the average salary of the corresponding department. Output the department, first name, and salary of employees along with the average salary of that department.
+SELECT department, first_name,  salary, AVG(salary) OVER(PARTITION BY department)
+FROM employees;
+
+/* AVG(salary) OVER(PARTITION BY department) calculates the average salary of each department. */
+
 
