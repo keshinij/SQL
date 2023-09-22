@@ -1,23 +1,23 @@
-Table 1 Query:
-Create Table EmployeeDemographics 
-(EmployeeID int, 
-FirstName varchar(50), 
-LastName varchar(50), 
-Age int, 
-Gender varchar(50)
+/* Example 1 */
+
+CREATE DATABASE IF NOT EXISTS employee;
+USE employee;
+
+CREATE TABLE employeeDetails 
+(employeeID int, 
+firstName varchar(50), 
+lastName varchar(50), 
+age int, 
+gender varchar(50)
 )
 
-Table 2 Query:
-Create Table EmployeeSalary 
-(EmployeeID int, 
-JobTitle varchar(50), 
-Salary int
+CREATE TABLE employeeSalary 
+(employeeID int, 
+jobTitle varchar(50), 
+salary int
 )
 
-
-
-Table 1 Insert:
-Insert into EmployeeDemographics VALUES
+INSERT INTO employeeDetails VALUES
 (1001, 'Jim', 'Halpert', 30, 'Male'),
 (1002, 'Pam', 'Beasley', 30, 'Female'),
 (1003, 'Dwight', 'Schrute', 29, 'Male'),
@@ -28,8 +28,7 @@ Insert into EmployeeDemographics VALUES
 (1008, 'Stanley', 'Hudson', 38, 'Male'),
 (1009, 'Kevin', 'Malone', 31, 'Male')
 
-Table 2 Insert:
-Insert Into EmployeeSalary VALUES
+INSERT INTO employeeSalary VALUES
 (1001, 'Salesman', 45000),
 (1002, 'Receptionist', 36000),
 (1003, 'Salesman', 63000),
@@ -39,3 +38,20 @@ Insert Into EmployeeSalary VALUES
 (1007, 'Supplier Relations', 41000),
 (1008, 'Salesman', 48000),
 (1009, 'Accountant', 42000)
+
+SELECT * 
+FROM employeeDetails JOIN employeeSalary
+ON employeeDetails.employeeID=employeeSalary.employeeID;
+
+-- How many males and females employees are there?
+SELECT gender, COUNT(*) AS numberOfEmployees
+FROM employeeDetails
+GROUP BY gender;
+
+-- Identify how many males and females employees we have along with their details.
+
+SELECT det.employeeID, CONCAT(det.lastName, ' ' , det.firstName) AS name, det.age, sal.jobTitle, det.gender, sal.salary, 
+	COUNT(det.gender) OVER(PARTITION BY det.gender) AS totalGender
+FROM employeeDetails det JOIN employeeSalary sal
+ON det.employeeID=sal.employeeID;
+
