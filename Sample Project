@@ -1,0 +1,213 @@
+/*
+QUESTION: Classic Models Inc. is a manufacturer of small-scale models of cars, motorcycles, planes, ships trains etc. Products manufactured by Classic Models are sold in toy & gift stores around the world. Classic Models has offices around the world with dozens of employees. 
+The customers of Classic Models are typically toy/gift stores. Each customer has a designated sales representative (an employee of Classic Models) they interact with. Customers typically place orders requesting several products in different quantities and pay for multiple orders at once via cheques.
+Create a database to record and manage all of the above information. The database will also be used for day-to-day operations (adding customers, placing orders, recording payments, hiring employees etc.).
+
+Add the data from this SQL file: 
+https://raw.githubusercontent.com/harsha547/ClassicModels-Database-Queries/master/database.sql
+*/
+
+-- How many employees are there in the company?
+SELECT COUNT(*) AS numberOfEmployees 
+FROM ClassicModels.employees;
+
+
+-- List the product lines that contain 'Cars'.
+SELECT productLine 
+FROM productLines 
+WHERE productLine LIKE '%Cars%';
+
+
+-- Report total payments for October 28, 2004.
+SELECT SUM(amount) AS 'Payments on October 28, 2004' 
+FROM payments 
+WHERE paymentDate='2004-10-28';
+
+
+-- Report the total number of payments received before October 28, 2004.
+SELECT COUNT(*) AS NumberOfPayments 
+FROM payments 
+WHERE paymentDate<'2004-10-28';
+
+
+-- List the products in each product line.
+SELECT productName, productLine 
+FROM ClassicModels.products 
+ORDER BY productLine;
+
+
+-- How many products in each product line?
+SELECT productLine, COUNT(productName) AS numberOfProducts 
+FROM products 
+GROUP BY productLine;
+
+
+-- What is the minimum payment received?
+SELECT MIN(amount) AS 'Minimum Payment' 
+FROM payments;
+
+
+-- List all payments greater than twice the average payment.
+SELECT * 
+FROM payments 
+WHERE amount > 2 * (SELECT AVG(amount) FROM payments);  
+/* an AVG( ) function in a sub-query */
+
+
+-- How many distinct products does ClassicModels sell?
+SELECT COUNT(DISTINCT productName) AS 'Distinct Products' 
+FROM products;
+
+
+-- Report the name and city of customers who don't have sales representatives.
+SELECT customerName, city 
+FROM customers 
+WHERE salesRepEmployeeNumber IS NULL;
+
+
+-- What are the names of executives with VP or Manager in their title? Use the CONCAT function to combine the employee's first name and last name into a single field for reporting?
+SELECT CONCAT(first_name, ' ', last_name) 
+FROM employees 
+WHERE jobTtitle LIKE '%VP%' OR jobTitle LIKE '%Manager%;
+
+
+-- Retrieve the details of all customer who have made a payment before October 28, 2004.
+SELECT *
+FROM customers
+WHERE customerNumber IN (SELECT DISTINCT customerNumber FROM payments WHERE paymentDate<'2004-10-28';   
+/* chaining 2 queries */
+
+
+-- Find the total number of payments made by each customer before October 28, 2004.
+SELECT COUNT(*) AS numberOfPayments, customerNumber 
+FROM payments 
+WHERE paymentDate<"2004-10-28" 
+GROUP BY customerNumber;
+
+
+-- Retrieve the customer number for 11th-20th customers who made the highest total payment before October 28, 2004.
+SELECT customerNumber, SUM(amount) AS totalAmount 
+FROM payments 
+WHERE paymentDate<"2004-10-18" 
+GROUP BY customerNumber 
+ORDER BY totalAmount DESC 
+LIMIT 10 
+OFFSET 10; 
+/* LIMIT tells you how many rows you want, OFFSET tells you how many rows you want to skip. */
+
+
+-- Display the full name of point of contact of each customer in the United States in upper case, along with their phone number, sorted by alphabetical order of customer name.
+SELECT customerName, UCASE(CONCAT(contactFirstName, ' ', contactLastName)) AS fullName, phone 
+FROM customers
+WHERE country="USA"
+ORDER BY customerName ASC;
+/* LCASE FOR lowercase */
+
+
+-- Display a paginated list of customers (sorted by customer name), with a country code column. The country code is simply the first 3 letters in the country name, in lower case.
+SELECT customerName, LCASE(SUBSTRING(country, 1, 3)) AS countryCode 
+FROM customers 
+ORDER BY customerName;
+
+
+-- Display the list of the 5 most expense products in the "Motorcycles" product line with their price (MSRP) rounded to 2 decimal points.
+SELECT productName, ROUND(MSRP,2) AS salesPrice FROM products 
+WHERE productLine="Motorcycles" 
+ORDER BY salesPrice DESC 
+LIMIT 5;
+
+
+-- List the largest single payment done by every customer in the year 2004, ordered by the transaction value (highest to lowest).
+SELECT customerNumber, MAX(amount) AS largestAmtIn2004 
+FROM payments 
+WHERE YEAR(paymentDate)=2004 
+GROUP BY customerNumber 
+ORDER BY largestAmtIn2004 DESC;
+/* YEAR(DATE) returns the year part of a date. MONTH(DATE) returns the month of a date. */
+
+
+-- Show the total payments received month by month for every year.
+SELECT YEAR(paymentDate) AS paymentYear, MONTH(paymentDate) AS paymentMonth, ROUND(SUM(amount),2) 
+FROM payments 
+GROUP BY paymentMonth, paymentYear 
+ORDER BY paymentMonth, paymentYear;
+
+
+-- Show the 10 most recent payments with customer details (name and phone number).
+SELECT checkNumber,customers.customerNumber, customerName, phone, amount, paymentDate 	
+FROM payments JOIN customers 	
+ON payments.customerNumber=customers.customerNumber
+ORDER BY paymentDate DESC 
+LIMIT 10;
+
+
+-- Show the full order information and product details for order no.10100.
+SELECT orderDetails.orderNumber, orderDate, requiredDate, shippedDate, customerNumber, orderDetails.productCode, orderDetails.quantityOrdered, products.productName, products.productVendor, products.productDescription, products.productLine
+FROM orders 
+JOIN orderDetails 
+ON orders.orderNumber=orderDetails.orderNumber
+JOIN products
+ON orderDetails.productCode=products.productCode
+WHERE orderDetails.orderNumber=10100;
+
+
+/* SELF JOIN
+A table can also be joined with itself. Each instance of the table can be given a temporary alias. */
+
+-- Show a list of employees with the name and employee number of their manager including the President. (the reportsTo column refer to another employee.)
+SELECT E.employeeNumber, E.lastName, E.firstName, E.jobTitle, E.reportsTo, CONCAT(M.lastName,' ', M.firstName) AS name
+FROM employees E LEFT JOIN employees M
+ON E.reportsTo=M.employeeNumber;
+
+
+-- Report the account representative for each customer.
+SELECT customerNumber, customerName, CONCAT(contactLastName, ' ', contactFirstName) AS 'Name', customers.salesRepEmployeeNumber, CONCAT(employees.lastName, ' ', employees.firstName) AS 'Account Representative'
+FROM customers JOIN employees
+ON customers.salesRepEmployeeNumber=employees.employeeNumber;
+
+
+-- Report total payments for Atelier graphique.
+SELECT customerName, SUM(payments.amount) AS 'Total Payments'
+FROM customers JOIN payments
+ON customers.customerNumber=payments.customerNumber
+WHERE customerName='Atelier graphique'
+GROUP BY customerName;
+
+
+-- Report the total payments by date.
+SELECT paymentDate, CONCAT('$ ', FORMAT(SUM(amount),2)) AS 'Total Payments' 
+FROM payments 
+GROUP BY paymentDate;
+
+
+-- How many orders have been placed by Herkku Gifts?
+SELECT customers.customerName, SUM(orderDetails.quantityOrdered) AS 'Orders'
+FROM orders 
+JOIN customers
+ON orders.customerNumber=customers.customerNumber
+JOIN orderDetails
+ON orders.orderNumber=orderDetails.orderNumber
+WHERE customers.customerName='Herkku Gifts'
+GROUP BY customers.customerName;
+
+
+-- Who are the employees in Boston?
+-- Two possible solutions, one using JOIN, the other one using a SUBQUERY.
+-- JOIN solution
+SELECT employeeNumber, CONCAT(lastName, ' ', firstName) AS 'Employee Name', offices.city
+FROM employees JOIN offices 
+ON employees.officeCode=offices.officeCode
+WHERE offices.city='Boston';
+
+-- SUBQUERY solution
+SELECT employeeNumber, CONCAT(lastName, ' ', firstName) AS 'Employee Name'
+FROM employees  
+WHERE officeCode IN (SELECT officeCode FROM offices WHERE city='Boston');
+
+
+-- List the value of 'On Hold' orders.
+SELECT orders.orderNumber, products.productName, (orderDetails.quantityOrdered*orderDetails.priceEach) AS 'Value'
+FROM orders 
+JOIN orderDetails ON orders.orderNumber=orderDetails.orderNumber
+JOIN products ON orderdetails.productCode = products.productCode
+WHERE orders.status='On Hold';
